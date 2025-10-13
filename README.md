@@ -29,3 +29,8 @@ Built with **Python**, **Telebot (pyTelegramBotAPI)**, and **OpenWeatherMap API*
    cd Telegram-Weather-checker-bot
 
 Educational project for portfolio
+
+Author: Sailaubayev Ayan
+📫 Telegram: @zvcwv
+
+💡 Portfolio: https://github.com/zvcwv
