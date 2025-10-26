@@ -63,6 +63,16 @@ def ask_city(message):
 def get_weather(message):
     lang = user_language.get(message.chat.id, 'en')
     city = message.text.strip().lower()
+    
+    if city == '/stop':
+        if lang == 'ru':
+            bot.reply_to(message, "👋 Хорошо, погоду больше не спрашиваю.")
+        elif lang == 'kr':
+            bot.reply_to(message, "👋 알겠습니다. 더 이상 날씨에 대해 묻지 않겠습니다.")
+        else:
+            bot.reply_to(message, "👋 Okay, I won't ask about the weather anymore.")
+        return
+    
     city_eng = city_map.get(city, city)
     res = requests.get(f'https://api.openweathermap.org/data/2.5/weather?q={city_eng}&appid={API}&units=metric&lang={lang}')
 
@@ -73,10 +83,15 @@ def get_weather(message):
 
         if lang == 'ru':
             bot.reply_to(message, f"🌤 Погода в {city.title()}: {temp}°C, {desc}")
+            next_msg = bot.send_message(message.chat.id, "Введи другой город или напиши /stop, чтобы выйти:")
         elif lang == 'kr':
             bot.reply_to(message, f"🌤 {city.title()}에서 {temp}°C, {desc}입니다")
+            next_msg = bot.send_message(message.chat.id, "다른 도시를 입력하거나 /stop을 입력하세요:")
         else:
             bot.reply_to(message, f"🌤 Weather in {city.title()}: {temp}°C, {desc}")
+            next_msg = bot.send_message(message.chat.id, "Enter another city or type /stop to exit:")
+            
+        bot.register_next_step_handler(next_msg, get_weather)
     else:
         if lang == 'ru':
             bot.reply_to(message, "❌ Город не найден. Попробуй снова.")
@@ -84,7 +99,8 @@ def get_weather(message):
             bot.reply_to(message, "❌ 도시를 찾을 수 없습니다. 다시 시도해 주세요.")
         else:
             bot.reply_to(message, "❌ City not found. Please try again.")
-    
+        
+        bot.register_next_step_handler(message, get_weather)
 
 
 
